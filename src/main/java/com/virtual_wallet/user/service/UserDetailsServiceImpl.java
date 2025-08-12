@@ -1,6 +1,6 @@
 package com.virtual_wallet.user.service;
 
-import com.virtual_wallet.user.entity.User;
+import com.virtual_wallet.user.entity.UserEntity;
 import com.virtual_wallet.user.repository.UserRepository;
 import com.virtual_wallet.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findUserEntityByEmail(email)
+        UserEntity user = userRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
 
