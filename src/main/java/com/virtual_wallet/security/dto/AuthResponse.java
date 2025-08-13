@@ -1,6 +1,9 @@
 package com.virtual_wallet.security.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-public record AuthResponse(@NotBlank String email,
-                           @NotBlank String password) {}
+@JsonPropertyOrder({"username", "message", "jwt", "status"})
+public record AuthResponse(String email,
+                           String message,
+                           String jwt,
+                           boolean status) {}
