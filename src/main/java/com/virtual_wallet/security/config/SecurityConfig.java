@@ -1,6 +1,6 @@
 package com.virtual_wallet.security.config;
 
-import com.virtual_wallet.security.config.filter.JwtTokenValidator;
+import com.virtual_wallet.security.filter.JwtTokenValidator;
 import com.virtual_wallet.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

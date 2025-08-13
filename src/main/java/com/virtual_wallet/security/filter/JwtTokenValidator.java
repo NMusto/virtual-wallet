@@ -1,4 +1,4 @@
-package com.virtual_wallet.security.config.filter;
+package com.virtual_wallet.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.virtual_wallet.util.JwtUtils;
