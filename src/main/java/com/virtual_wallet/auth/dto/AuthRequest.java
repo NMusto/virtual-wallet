@@ -1,4 +1,4 @@
-package com.virtual_wallet.security.dto;
+package com.virtual_wallet.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

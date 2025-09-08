@@ -1,4 +1,4 @@
-package com.virtual_wallet.security.dto;
+package com.virtual_wallet.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
