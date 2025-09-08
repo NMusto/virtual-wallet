@@ -72,7 +72,7 @@ public class JwtUtils {
         }
     }
 
-    public String stractEmail(DecodedJWT decodedJWT) {
+    public String extractEmail(DecodedJWT decodedJWT) {
         return decodedJWT.getSubject().toString();
     }
 

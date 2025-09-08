@@ -1,5 +1,4 @@
 
-
 spring:
   config:
     import:
@@ -16,12 +15,12 @@ spring:
       ddl-auto: 'create-drop'
 
 
-security:
-  jwt:
-    private:
-      key: ${PRIVATE_KEY}
-    user:
-      generator: ${USER_GENERATOR}
+#security:
+  #jwt:
+    #private:
+      #key: ${PRIVATE_KEY}
+    #user:
+      #generator: ${USER_GENERATOR}
 
 
 

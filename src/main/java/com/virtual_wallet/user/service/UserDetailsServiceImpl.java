@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +42,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserEntity userFound = userRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<SimpleGrantedAuthority> authorities = userFound.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        userFound.getRoles()
+                        .forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName()))));
+
+        userFound.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
 
         return new User(
                 userFound.getEmail(),
