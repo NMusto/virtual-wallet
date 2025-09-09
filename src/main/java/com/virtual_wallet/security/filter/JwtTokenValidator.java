@@ -1,5 +1,6 @@
 package com.virtual_wallet.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.virtual_wallet.util.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -22,7 +23,7 @@ import java.util.Collection;
 public class JwtTokenValidator extends OncePerRequestFilter {
 
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
     public JwtTokenValidator(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
@@ -35,24 +36,26 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (jwtToken != null) {
+        if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
             jwtToken = jwtToken.substring(7);
 
-            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+            try {
+                DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-            String email = jwtUtils.extractEmail(decodedJWT);
+                String email = jwtUtils.extractEmail(decodedJWT);
 
-            String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+                String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-            Collection<? extends GrantedAuthority> authoritiesList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                Collection<? extends GrantedAuthority> authoritiesList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
-            SecurityContext context = SecurityContextHolder.getContext();
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authoritiesList);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authoritiesList);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JWTVerificationException ex) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid or expired token");
+            }
 
-            context.setAuthentication(authentication);
-
-            SecurityContextHolder.setContext(context);
         }
         filterChain.doFilter(request, response);
     }

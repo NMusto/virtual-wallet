@@ -28,10 +28,10 @@ public class JwtUtils {
     @Value("${security.jwt.user.generator}")
     private String userGenerator;
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final String CLAIM_AUTHORITIES = "authorities";
+    private static final String CLAIM_USER_ID = "userId";
 
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, Long userId) {
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
         String email = authentication.getPrincipal().toString();
 
@@ -39,20 +39,13 @@ public class JwtUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        Optional<UserEntity> user = userRepository.findUserEntityByEmail(email);
-
-        if (!user.isPresent()) {
-            throw new RuntimeException("User not found!");
-        }
-
-        Long userId = user.get().getId();
-
         String token = JWT.create()
                 .withIssuer(userGenerator)
                 .withSubject(email)
-                .withClaim("userId", userId)
-                .withClaim("authorities", authorities)
-                .withIssuedAt(new Date(System.currentTimeMillis() + 1800000))
+                .withClaim(CLAIM_USER_ID, userId)
+                .withClaim(CLAIM_AUTHORITIES, authorities)
+                .withIssuedAt(new Date(System.currentTimeMillis()))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))   //30min
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
