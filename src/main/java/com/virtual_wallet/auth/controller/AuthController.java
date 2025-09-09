@@ -1,6 +1,6 @@
 package com.virtual_wallet.auth.controller;
 
-import com.virtual_wallet.auth.service.AuthService;
+import com.virtual_wallet.auth.service.AuthServiceImpl;
 import com.virtual_wallet.auth.dto.AuthRequest;
 import com.virtual_wallet.auth.dto.AuthResponse;
 import jakarta.validation.Valid;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authServiceImpl;
 
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest authRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.loginUser(authRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(authServiceImpl.loginUser(authRequest));
     }
 }
