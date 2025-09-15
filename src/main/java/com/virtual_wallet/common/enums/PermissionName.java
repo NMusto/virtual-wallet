@@ -1,8 +1,8 @@
 package com.virtual_wallet.common.enums;
 
 public enum PermissionName {
-    READ,
-    CREATE,
-    UPDATE,
-    DELETE
+    READ_USER,
+    CREATE_USER,
+    UPDATE_USER,
+    DELETE_USER
 }
