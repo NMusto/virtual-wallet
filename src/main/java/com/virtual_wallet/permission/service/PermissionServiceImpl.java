@@ -1,5 +1,6 @@
 package com.virtual_wallet.permission.service;
 
+import com.virtual_wallet.permission.dto.PermissionRequest;
 import com.virtual_wallet.permission.entity.Permission;
 import com.virtual_wallet.permission.repository.PermissionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +29,23 @@ public class PermissionServiceImpl implements PermissionService{
     }
 
     @Override
-    public Permission createPermission(Permission permission) {
+    public Permission createPermission(PermissionRequest permissionRequest) {
+        String permissionName = permissionRequest.permissionName().toUpperCase(Locale.ROOT);
+
+        if (permissionRepository.existsByName(permissionName)) {
+            throw new RuntimeException("Permission with name " + permissionName + " already exists");
+        }
+
+        Permission permission = new Permission();
+        permission.setName(permissionName);
+
         return permissionRepository.save(permission);
     }
 
     @Override
-    public Permission updatePermission(Permission permission) {
-        this.getPermission(permission.getId());
+    public Permission updatePermission(Long permissionId, PermissionRequest permissionRequest) {
+        Permission permission = this.getPermission(permissionId);
+        permission.setName(permissionRequest.permissionName().toUpperCase());
         return permissionRepository.save(permission);
     }
 
