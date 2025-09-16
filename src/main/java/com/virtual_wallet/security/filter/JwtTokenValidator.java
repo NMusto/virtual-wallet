@@ -50,6 +50,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authoritiesList);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                
             } catch (JWTVerificationException ex) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or expired token");

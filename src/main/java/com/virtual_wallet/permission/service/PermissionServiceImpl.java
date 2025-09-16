@@ -2,6 +2,8 @@ package com.virtual_wallet.permission.service;
 
 import com.virtual_wallet.permission.dto.PermissionRequest;
 import com.virtual_wallet.permission.entity.Permission;
+import com.virtual_wallet.permission.exception.PermissionAlreadyExistsException;
+import com.virtual_wallet.permission.exception.PermissionNotFoundException;
 import com.virtual_wallet.permission.repository.PermissionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class PermissionServiceImpl implements PermissionService{
     public Permission createPermission(PermissionRequest permissionRequest) {
 
         if (permissionRepository.existsByName(permissionRequest.permissionName())) {
-            throw new RuntimeException("Permission with name " + permissionRequest.permissionName() + " already exists");
+            throw new PermissionAlreadyExistsException("Permission with name " + permissionRequest.permissionName() + " already exists");
         }
 
         Permission permission = new Permission();
@@ -50,7 +52,7 @@ public class PermissionServiceImpl implements PermissionService{
     @Override
     public String deletePermissionById(Long permissionId) {
         if (!permissionRepository.existsById(permissionId)) {
-            throw new EntityNotFoundException("Permission not found with ID: " + permissionId);
+            throw new PermissionNotFoundException("Permission not found with ID: " + permissionId);
         }
         permissionRepository.deleteById(permissionId);
         return "Permission successfully deleted";
@@ -58,6 +60,6 @@ public class PermissionServiceImpl implements PermissionService{
 
     private Permission getPermission(Long permissionId) {
         return permissionRepository.findById(permissionId)
-                .orElseThrow(() -> new EntityNotFoundException("Permission not found with ID: " + permissionId));
+                .orElseThrow(() -> new PermissionNotFoundException("Permission not found with ID: " + permissionId));
     }
 }
