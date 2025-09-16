@@ -1,4 +1,4 @@
-package com.virtual_wallet.util;
+package com.virtual_wallet.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

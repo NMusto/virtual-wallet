@@ -5,7 +5,7 @@ import com.virtual_wallet.auth.dto.AuthResponse;
 import com.virtual_wallet.user.entity.UserEntity;
 import com.virtual_wallet.user.repository.UserRepository;
 import com.virtual_wallet.user.service.UserDetailsServiceImpl;
-import com.virtual_wallet.util.JwtUtils;
+import com.virtual_wallet.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

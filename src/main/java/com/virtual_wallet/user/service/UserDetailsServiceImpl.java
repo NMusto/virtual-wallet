@@ -2,7 +2,7 @@ package com.virtual_wallet.user.service;
 
 import com.virtual_wallet.user.entity.UserEntity;
 import com.virtual_wallet.user.repository.UserRepository;
-import com.virtual_wallet.util.JwtUtils;
+import com.virtual_wallet.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

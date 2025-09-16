@@ -30,14 +30,13 @@ public class PermissionServiceImpl implements PermissionService{
 
     @Override
     public Permission createPermission(PermissionRequest permissionRequest) {
-        String permissionName = permissionRequest.permissionName().toUpperCase(Locale.ROOT);
 
-        if (permissionRepository.existsByName(permissionName)) {
-            throw new RuntimeException("Permission with name " + permissionName + " already exists");
+        if (permissionRepository.existsByName(permissionRequest.permissionName())) {
+            throw new RuntimeException("Permission with name " + permissionRequest.permissionName() + " already exists");
         }
 
         Permission permission = new Permission();
-        permission.setName(permissionName);
+        permission.setName(permissionRequest.permissionName());
 
         return permissionRepository.save(permission);
     }
@@ -45,7 +44,7 @@ public class PermissionServiceImpl implements PermissionService{
     @Override
     public Permission updatePermission(Long permissionId, PermissionRequest permissionRequest) {
         Permission permission = this.getPermission(permissionId);
-        permission.setName(permissionRequest.permissionName().toUpperCase());
+        permission.setName(permissionRequest.permissionName());
         return permissionRepository.save(permission);
     }
 
