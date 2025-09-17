@@ -1,7 +1,9 @@
 package com.virtual_wallet.permission.controller;
 
+import com.virtual_wallet.permission.dto.PermissionRequest;
 import com.virtual_wallet.permission.entity.Permission;
 import com.virtual_wallet.permission.service.PermissionService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,4 +35,22 @@ public class PermissionController {
         return ResponseEntity.status(HttpStatus.OK).body(permission);
     }
 
+    @PostMapping
+    public ResponseEntity<Permission> createPermission(@RequestBody @Valid PermissionRequest permissionRequest) {
+        Permission permission = permissionService.createPermission(permissionRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(permission);
+    }
+
+    @PutMapping("/{permissionId}")
+    public ResponseEntity<Permission> updatePermission(@PathVariable @Positive @NotNull Long permissionId,
+                                                       @RequestBody @Valid PermissionRequest permissionRequest) {
+        Permission permission = permissionService.updatePermission(permissionId, permissionRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(permission);
+    }
+
+    @DeleteMapping("/permissionId")
+    public ResponseEntity<String> deletePermission(@PathVariable @Positive @NotNull Long permissionId) {
+        String response = permissionService.deletePermissionById(permissionId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
