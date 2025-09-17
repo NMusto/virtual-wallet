@@ -2,11 +2,13 @@ package com.virtual_wallet.security.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtual_wallet.security.jwt.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 
+@Slf4j
 public class JwtTokenValidator extends OncePerRequestFilter {
 
 
@@ -50,8 +53,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authoritiesList);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                
+
             } catch (JWTVerificationException ex) {
+                log.warn("JWT validation failed: {}", ex.getMessage());
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or expired token");
             }

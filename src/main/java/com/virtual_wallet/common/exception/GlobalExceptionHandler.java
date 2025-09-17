@@ -30,14 +30,25 @@ public class GlobalExceptionHandler {
                 errors
         );
 
-        log.warn("Validation error: {}", ex.getMessage());
+        log.warn("Validation error: {}", ex);
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        log.warn("Illegal Argument: {}", ex);
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(PermissionNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlePermissionNotFoundException(PermissionNotFoundException ex) {
-        log.error("Permission not found: {}", ex.getMessage());
+        log.error("Permission not found: {}", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
@@ -48,7 +59,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PermissionAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handlePermissionAlreadyExists(PermissionAlreadyExistsException ex) {
-        log.error("Permission already exists: {}", ex.getMessage());
+        log.error("Permission already exists: {}", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT,
@@ -59,11 +70,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        log.error("Unexpected error occurred: {}", ex.getMessage());
+        log.error("Unexpected error occurred: {}", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Unexpected error ocurred"
+                "Unexpected error occurred"
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
