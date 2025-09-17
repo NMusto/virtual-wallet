@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +25,12 @@ public class GlobalExceptionHandler {
                 e -> errors.put(e.getField(), e.getDefaultMessage())
         );
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "Validation failed",
-                errors
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message("Validation failed")
+                .errors(errors)
+                .timestamp(LocalDateTime.now())
+                .build();
 
         log.warn("Validation error: {}", ex);
 
@@ -39,10 +41,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         log.warn("Illegal Argument: {}", ex);
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -50,10 +54,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handlePermissionNotFoundException(PermissionNotFoundException ex) {
         log.error("Permission not found: {}", ex);
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND,
-                ex.getMessage()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status( HttpStatus.NOT_FOUND)
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
@@ -61,10 +67,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handlePermissionAlreadyExists(PermissionAlreadyExistsException ex) {
         log.error("Permission already exists: {}", ex);
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.CONFLICT,
-                ex.getMessage()
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT)
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
@@ -72,10 +80,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         log.error("Unexpected error occurred: {}", ex);
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Unexpected error occurred"
-        );
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("Unexpected error occurred")
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
