@@ -1,6 +1,15 @@
 package com.virtual_wallet.auth.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
-public record AuthRequest(@NotBlank String email,
-                          @NotBlank String password) {}
+@Schema(description = "Login request containing user credentials")
+public record AuthRequest(
+        @NotBlank
+        @Schema(description = "User email", example = "user@example.com")
+        String email,
+
+        @NotBlank
+        @Schema(description = "User password", example = "P@ssw0rd!")
+        String password
+) {}
